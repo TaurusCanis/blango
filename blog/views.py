@@ -10,7 +10,6 @@ def index(request):
     posts = Post.objects.filter(published_at__lte=timezone.now())
     logger.debug("Got %d posts", len(posts))
     return render(request, "blog/index.html", {"posts": posts})
-
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.user.is_active:

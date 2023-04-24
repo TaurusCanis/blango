@@ -3,7 +3,9 @@ from django.utils.html import format_html
 from django.contrib.auth import get_user_model
 user_model = get_user_model()
 from blog.models import Post
+import logging
 
+logger = logging.getLogger(__name__)
 register = template.Library()
 
 @register.filter
@@ -47,7 +49,9 @@ def endcol():
 
 @register.inclusion_tag("blog/post-list.html")
 def recent_posts(post):
+    posts = Post.objects.exclude(pk=post.pk).order_by('published_at')[:5]
+    logger.debug("Loaded %d recent posts for post %d", len(posts), post.pk)
     return {
-        "posts": Post.objects.exclude(pk=post.pk).order_by('published_at')[:5],
+        "posts": posts,
         "title": "Recent Posts"
     }
